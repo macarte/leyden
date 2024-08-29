@@ -184,7 +184,7 @@ class CompileBroker: AllStatic {
   static AbstractCompiler* _compilers[3];
 
   // The maximum numbers of compiler threads to be determined during startup.
-  static int _c1_count, _c2_count, _c3_count, _sc_count;
+  static int _c1_count, _c2_count, _c3_count, _sc_count, _sc1_count, _sc2_count;
 
   // An array of compiler thread Java objects
   static jobject *_compiler1_objects, *_compiler2_objects, *_compiler3_objects, *_sc_objects;
@@ -345,6 +345,9 @@ public:
                                  TRAPS);
   static CompileQueue* c1_compile_queue();
   static CompileQueue* c2_compile_queue();
+  static CompileQueue* c3_compile_queue();
+  static CompileQueue* sc1_compile_queue();
+  static CompileQueue* sc2_compile_queue();
 
 private:
   static nmethod* compile_method(const methodHandle& method,
@@ -445,7 +448,7 @@ public:
 
   static jobject sc_object(int idx) {
     assert(_sc_objects != nullptr, "must be initialized");
-    assert(idx < _sc_count, "oob");
+    assert(idx < (_sc1_count + _sc2_count), "oob");
     return _sc_objects[idx];
   }
 
@@ -457,8 +460,11 @@ public:
 
   static CompileLog* get_log(CompilerThread* ct);
 
-  static int get_c1_thread_count() {                return _compilers[0]->num_compiler_threads(); }
-  static int get_c2_thread_count() {                return _compilers[1]->num_compiler_threads(); }
+  static int get_c1_queue_thread_count() {                return _compilers[0]->num_compiler_threads() - _sc1_count; }
+  static int get_c2_queue_thread_count() {                return _compilers[1]->num_compiler_threads() - _sc2_count; }
+  static int get_c3_queue_thread_count() {                return _compilers[3]->num_compiler_threads(); }
+  static int get_sc1_queue_thread_count() {                return _sc1_count; }
+  static int get_sc2_queue_thread_count() {                return _sc2_count; }
   static int get_total_compile_count() {            return _total_compile_count; }
   static int get_total_bailout_count() {            return _total_bailout_count; }
   static int get_total_invalidated_count() {        return _total_invalidated_count; }

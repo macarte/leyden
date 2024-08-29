@@ -840,6 +840,7 @@
 
   <Event name="CompilerQueueUtilization" category="Java Virtual Machine, Compiler" label="Compiler Queue Utilization" period="everyChunk">
     <Field type="CompilerType" name="compiler" label="Compiler" />
+    <Field type="string" name="queueName" label="Queue Name"/>
     <Field type="long" contentType="hertz" name="addedRate" label="Requets Added Rate" description="Requests added per second"/>
     <Field type="long" contentType="hertz" name="removedRate" label="Requests Removed Rate" description="Requests removed per second"/>
     <Field type="long" name="queueSize" label="Queue Size"/>

@@ -141,6 +141,8 @@ int CompileBroker::_c1_count = 0;
 int CompileBroker::_c2_count = 0;
 int CompileBroker::_c3_count = 0;
 int CompileBroker::_sc_count = 0;
+int CompileBroker::_sc1_count = 0;
+int CompileBroker::_sc2_count = 0;
 
 // An array of compiler names as Java String objects
 jobject* CompileBroker::_compiler1_objects = nullptr;
@@ -621,6 +623,18 @@ CompileQueue* CompileBroker::c2_compile_queue() {
   return _c2_compile_queue;
 }
 
+CompileQueue* CompileBroker::c3_compile_queue() {
+  return _c3_compile_queue;
+}
+
+CompileQueue* CompileBroker::sc1_compile_queue() {
+  return _sc1_compile_queue;
+}
+
+CompileQueue* CompileBroker::sc2_compile_queue() {
+  return _sc2_compile_queue;
+}
+
 void CompileBroker::print_compile_queues(outputStream* st) {
   st->print_cr("Current compiles: ");
 
@@ -716,6 +730,8 @@ void CompileBroker::compilation_init(JavaThread* THREAD) {
   _c2_count = CompilationPolicy::c2_count();
   _c3_count = CompilationPolicy::c3_count();
   _sc_count = CompilationPolicy::sc_count();
+  _sc1_count = _sc_count > 0 && _c1_count > 0 ? 1 :0;
+  _sc2_count = _sc_count > 0 && _c2_count > 0 ? 1 :0;
 
 #if INCLUDE_JVMCI
   if (EnableJVMCI) {

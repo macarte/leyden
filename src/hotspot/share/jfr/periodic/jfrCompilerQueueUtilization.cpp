@@ -30,7 +30,10 @@
 enum {
     c1_compiler_queue_id = 1,
     c2_compiler_queue_id = 2,
-    num_compiler_queues = 2
+    c3_compiler_queue_id = 3,
+    sc1_compiler_queue_id = 4,
+    sc2_compiler_queue_id = 5,
+    num_compiler_queues = 5
 };
 
 typedef int (*GET_COMPILER_THREAD_COUNT)();
@@ -55,8 +58,11 @@ static uint64_t rate_per_second(uint64_t current, uint64_t old, const JfrTickspa
 
 void JfrCompilerQueueUtilization::send_events() {
   static CompilerQueueEntry compilerQueueEntries[num_compiler_queues] = {
-    {CompileBroker::c1_compile_queue(), c1_compiler_queue_id, &CompileBroker::get_c1_thread_count, 0, 0},
-    {CompileBroker::c2_compile_queue(), c2_compiler_queue_id, &CompileBroker::get_c2_thread_count, 0, 0}};
+    {CompileBroker::c1_compile_queue(), c1_compiler_queue_id, &CompileBroker::get_c1_queue_thread_count, 0, 0},
+    {CompileBroker::c2_compile_queue(), c2_compiler_queue_id, &CompileBroker::get_c2_queue_thread_count, 0, 0},
+    {CompileBroker::c3_compile_queue(), c3_compiler_queue_id, &CompileBroker::get_c3_queue_thread_count, 0, 0},
+    {CompileBroker::sc1_compile_queue(), sc1_compiler_queue_id, &CompileBroker::get_sc1_queue_thread_count, 0, 0},
+    {CompileBroker::sc2_compile_queue(), sc2_compiler_queue_id, &CompileBroker::get_sc2_queue_thread_count, 0, 0}};
 
   const JfrTicks cur_time = JfrTicks::now();
   static JfrTicks last_sample_instant;
@@ -71,6 +77,7 @@ void JfrCompilerQueueUtilization::send_events() {
 
       EventCompilerQueueUtilization event;
       event.set_compiler(entry->compiler_queue_id);
+      event.set_queueName(entry->compilerQueue->name());
       event.set_addedRate(addedRate);
       event.set_removedRate(removedRate);
       event.set_queueSize(entry->compilerQueue->size());
