@@ -28,6 +28,7 @@ package java.lang.invoke;
 import java.lang.constant.ClassDesc;
 import java.lang.constant.Constable;
 import java.lang.constant.MethodTypeDesc;
+import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.function.Supplier;
@@ -393,6 +394,20 @@ class MethodType
         if (ptypes.length == 0) {
             ptypes = NO_PTYPES; trusted = true;
         }
+
+        // Hack for testing archived WeakReference
+        if (ptypes.length == 1) {
+            if (ptypes[0].getName().equals("Test1")) {
+                test1();
+            }
+            if (ptypes[0].getName().equals("Test2")) {
+                test2();
+            }
+            if (ptypes[0].getName().equals("Test3")) {
+                test3();
+            }
+        }
+
         MethodType primordialMT = new MethodType(rtype, ptypes);
         if (archivedMethodTypes != null) {
             // If this JVM process reads from archivedMethodTypes, it never
@@ -426,6 +441,21 @@ class MethodType
 
     private static final @Stable MethodType[] objectOnlyTypes = new MethodType[20];
     private static @Stable HashMap<MethodType,MethodType> archivedMethodTypes;
+
+    private static Object theObject = new String("non-null");
+    private static WeakReference<Object> ref = new WeakReference<>(theObject);
+    static void test1() {
+        System.out.println("ref = " + ref.get());
+    }
+    static void test2() {
+        theObject = null;
+        System.gc();
+        System.gc();
+        System.out.println("ref = " + ref.get());
+    }
+    static void test3() {
+        System.out.println("ref = " + ref.get());
+    }
 
     /**
      * Finds or creates a method type whose components are {@code Object} with an optional trailing {@code Object[]} array.
