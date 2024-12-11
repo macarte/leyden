@@ -307,6 +307,11 @@ public abstract sealed class Reference<T>
     }
 
     static {
+        runtimeSetup();
+    }
+
+    // Called from JVM when loading an AOT cache
+    private static void runtimeSetup() {
         // provide access in SharedSecrets
         SharedSecrets.setJavaLangRefAccess(new JavaLangRefAccess() {
             @Override
