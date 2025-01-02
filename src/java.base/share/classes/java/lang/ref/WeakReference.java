@@ -70,4 +70,16 @@ public non-sealed class WeakReference<T> extends Reference<T> {
         super(referent, q);
     }
 
+    /**
+     * Validate queue
+     */
+    public void validateQueue() {
+        if (queue != null) {
+            if (queue != ReferenceQueue.NULL) {
+                if (queue.getClass().equals(ReferenceQueue.Null.class)) {
+                    throw new AssertionError("Failed the comparison a ReferenceQueue.Null");
+                }
+            }
+        }
+    }
 }

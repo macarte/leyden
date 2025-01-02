@@ -446,6 +446,7 @@ class MethodType
     private static WeakReference<Object> ref = new WeakReference<>(theObject);
     static void test1() {
         System.out.println("ref = " + ref.get());
+        ref.validateQueue();
     }
     static void test2() {
         theObject = null;

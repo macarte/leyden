@@ -48,7 +48,19 @@ import jdk.internal.vm.ContinuationSupport;
  */
 
 public class ReferenceQueue<T> {
-    private static class Null extends ReferenceQueue<Object> {
+
+    /**
+     * Used to identify NULL queue assignment.
+     */
+    public static class Null extends ReferenceQueue<Object> {
+
+        /**
+         * Constructs a new Null queue.
+         */
+        public Null() {
+        //    super(0);
+        }
+
         @Override
         boolean enqueue(Reference<?> r) {
             return false;
